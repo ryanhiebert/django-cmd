@@ -13,7 +13,7 @@ django-cmd: Get a django command
    :target: https://codecov.io/gh/ryanhiebert/django-cmd
 
 
-Django only includes the ``django-admin``.
+Django includes the ``django-admin`` command.
 They prefer to not include multiple ways to do the same thing,
 but I really want to spell it ``django``.
 I also wanted to be able to configure a
