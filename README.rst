@@ -9,7 +9,10 @@ django-cmd: Get a django command
 .. image:: https://travis-ci.org/ryanhiebert/django-cmd.svg?branch=master
    :target: https://travis-ci.org/ryanhiebert/django-cmd
 
-.. image:: https://codecov.io/gh/ryanhiebert/django-cmd/branch/master/graph/badge.svg
+.. image:: https://github.com/ryanhiebert/django-cmd/actions/workflows/build.yml/badge.svg
+   :target: https://github.com/ryanhiebert/django-cmd/actions/workflows/build.yml
+
+.. image:: https://codecov.io/gh/ryanhiebert/django-cmd/graph/badge.svg?token=OK3xJ71rjV
    :target: https://codecov.io/gh/ryanhiebert/django-cmd
 
 
