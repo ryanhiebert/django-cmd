@@ -40,5 +40,4 @@ dev = ["pytest", "pytest-mock", "coverage_pth", "ruff", "isort"]
 
 [tool.coverage.run]
 branch = true
-parallel = true
 source = "django_cmd"
