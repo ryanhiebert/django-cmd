@@ -4,3 +4,6 @@ __pycache__/
 .tox/
 .cache/
 .coverage*
+.venv/
+.ruff_cache/
+uv.lock
