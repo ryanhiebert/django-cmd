@@ -95,7 +95,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v4
       - run: uv python install ${{ matrix.python-version }}
-      - run: uv sync
+      - run: uv sync --dev
       - run: uv run --with 'django~=${{ matrix.django-version }}.0' pytest
       - name: Rename coverage file
         run: mv .coverage .coverage.dj${{ matrix.django-version }}.py${{ matrix.python-version }}
