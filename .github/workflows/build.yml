@@ -1,0 +1,132 @@
+name: Build
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: '27 5 * * SAT'
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        django-version:
+          - "2.2"
+          - "3.0"
+          - "3.1"
+          - "3.2"
+          - "4.0"
+          - "4.1"
+          - "4.2"
+          - "5.0"
+          - "5.1"
+        python-version:
+          - "3.8"
+          - "3.9"
+          - "3.10"
+          - "3.11"
+          - "3.12"
+          - "3.13"
+        exclude:
+          - django-version: "2.2"
+            python-version: "3.10"
+          - django-version: "2.2"
+            python-version: "3.11"
+          - django-version: "2.2"
+            python-version: "3.12"
+          - django-version: "2.2"
+            python-version: "3.13"
+          - django-version: "3.0"
+            python-version: "3.10"
+          - django-version: "3.0"
+            python-version: "3.11"
+          - django-version: "3.0"
+            python-version: "3.12"
+          - django-version: "3.0"
+            python-version: "3.13"
+          - django-version: "3.1"
+            python-version: "3.10"
+          - django-version: "3.1"
+            python-version: "3.11"
+          - django-version: "3.1"
+            python-version: "3.12"
+          - django-version: "3.1"
+            python-version: "3.13"
+          - django-version: "3.2"
+            python-version: "3.11"
+          - django-version: "3.2"
+            python-version: "3.12"
+          - django-version: "3.2"
+            python-version: "3.13"
+          - django-version: "4.0"
+            python-version: "3.11"
+          - django-version: "4.0"
+            python-version: "3.12"
+          - django-version: "4.0"
+            python-version: "3.13"
+          - django-version: "4.1"
+            python-version: "3.12"
+          - django-version: "4.1"
+            python-version: "3.13"
+          - django-version: "4.2"
+            python-version: "3.8"
+          - django-version: "4.2"
+            python-version: "3.12"
+          - django-version: "4.2"
+            python-version: "3.13"
+          - django-version: "5.0"
+            python-version: "3.8"
+          - django-version: "5.0"
+            python-version: "3.9"
+          - django-version: "5.0"
+            python-version: "3.13"
+          - django-version: "5.1"
+            python-version: "3.8"
+          - django-version: "5.1"
+            python-version: "3.9"
+    env:
+      COVERAGE_PROCESS_START: ".coveragerc"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+      - run: uv python install ${{ matrix.python-version }}
+      - run: uv sync --dev
+      - name: Make coverage run automatically
+        run: echo "import coverage; coverage.process_startup()" > .venv/lib/python${{ matrix.python-version }}/site-packages/coverage.pth
+      - run: uv run --with 'django~=${{ matrix.django-version }}.0' pytest
+      - name: Finalize coverage file
+        run: uv run coverage combine
+      - name: Rename coverage file
+        run: mv .coverage .coverage.dj${{ matrix.django-version }}.py${{ matrix.python-version }}
+      - name: Save coverage file
+        uses: actions/upload-artifact@v4
+        with:
+          name: .coverage.dj${{ matrix.django-version }}.py${{ matrix.python-version }}
+          path: .coverage.dj${{ matrix.django-version }}.py${{ matrix.python-version }}
+          include-hidden-files: true
+
+  codecov:
+    needs: pytest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+      - run: uv python install 3.13
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: .coverage.*
+          merge-multiple: true
+      - name: Combine coverage
+        run: |
+          uv run coverage combine
+          uv run coverage xml
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
