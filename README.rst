@@ -6,9 +6,6 @@ django-cmd: Get a django command
    :target: https://pypi.python.org/pypi/django-cmd
    :alt: Latest Version
 
-.. image:: https://travis-ci.org/ryanhiebert/django-cmd.svg?branch=master
-   :target: https://travis-ci.org/ryanhiebert/django-cmd
-
 .. image:: https://github.com/ryanhiebert/django-cmd/actions/workflows/build.yml/badge.svg
    :target: https://github.com/ryanhiebert/django-cmd/actions/workflows/build.yml
 
