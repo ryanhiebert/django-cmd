@@ -36,7 +36,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [dependency-groups]
-dev = ["pytest", "pytest-mock", "coverage_pth", "ruff", "isort"]
+dev = ["pytest", "pytest-mock", "coverage", "ruff", "isort"]
 
 [tool.coverage.run]
 branch = true

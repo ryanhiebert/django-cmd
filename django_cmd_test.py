@@ -31,7 +31,6 @@ def test_main_from_configfile(monkeypatch, mocker, tmpdir):
 def test_main_no_configfile(monkeypatch, mocker, tmpdir):
     """Try to read settings module, but fail and still run command."""
     cmd = mocker.patch("django_cmd.execute_from_command_line")
-    print(tmpdir)
     tmpdir.chdir()
     main()
     assert "DJANGO_SETTINGS_MODULE" not in os.environ

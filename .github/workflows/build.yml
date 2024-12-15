@@ -96,7 +96,11 @@ jobs:
       - uses: astral-sh/setup-uv@v4
       - run: uv python install ${{ matrix.python-version }}
       - run: uv sync --dev
+      - name: Make coverage run automatically
+        run: echo "import coverage; coverage.process_startup()" > .venv/lib/python${{ matrix.python-version }}/site-packages/coverage.pth
       - run: uv run --with 'django~=${{ matrix.django-version }}.0' pytest
+      - name: Finalize coverage file
+        run: uv run coverage combine
       - name: Rename coverage file
         run: mv .coverage .coverage.dj${{ matrix.django-version }}.py${{ matrix.python-version }}
       - name: Save coverage file

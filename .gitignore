@@ -6,4 +6,5 @@ __pycache__/
 .coverage*
 .venv/
 .ruff_cache/
+.pytest_cache/
 uv.lock
