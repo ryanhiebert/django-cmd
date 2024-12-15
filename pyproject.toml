@@ -1,11 +1,12 @@
 [project]
 name = "django-cmd"
 version = "2.0"
-description = "Get a django command"
+description = "Have a django command"
 authors = [{ name = "Ryan Hiebert", email = "ryan@ryanhiebert.com" }]
 license = "MIT"
 readme = "README.rst"
-dependencies = ["Django"]
+requires-python = ">=3.8"
+dependencies = ["Django", 'tomli; python_version < "3.11"']
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",

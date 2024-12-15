@@ -1,6 +1,6 @@
-2.0 (TBD)
-+++++++++
+2.0 (2024-12-15)
+++++++++++++++++
 
-* Stop testing with Python<3.8
-* Stop testing with Django<2.0
-* Use uv and pypackage.toml
+* Require Python >= 3.8
+* Require Django >= 2.0
+* Read configuration from pyproject.toml
