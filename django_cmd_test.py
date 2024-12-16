@@ -71,6 +71,10 @@ def test_main_no_configfile(mocker, tmpdir):
     assert cmd.called
 
 
-def test_call_command():
-    """Should have installed a "django" command."""
-    subprocess.call(["django"])
+def test_new_project(tmpdir):
+    """Should be able to use with a new project."""
+    tmpdir.chdir()
+    subprocess.run(["django", "startproject", "myproject", "."], check=True)
+    config = '[tool.django]\nsettings_module = "myproject.settings"\n'
+    tmpdir.join("pyproject.toml").write(config.encode("utf-8"))
+    subprocess.run(["django", "check"], check=True)
