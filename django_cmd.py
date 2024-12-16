@@ -20,6 +20,7 @@ def main():
                 config = tomllib.load(f)
             settings_module = config["tool"]["django"]["settings_module"]
             os.environ.setdefault("DJANGO_SETTINGS_MODULE", settings_module)
+            sys.path.insert(0, "")
         except (FileNotFoundError, KeyError):
             pass  # No pyproject.toml or no settings_module configured
 
@@ -30,5 +31,6 @@ def main():
         if parser.has_option("django", "settings_module"):
             settings_module = parser.get("django", "settings_module")
             os.environ.setdefault("DJANGO_SETTINGS_MODULE", settings_module)
+            sys.path.insert(0, "")
 
     execute_from_command_line(sys.argv)
