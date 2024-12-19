@@ -1,3 +1,11 @@
+2.2 (2024-12-19)
+++++++++++++++++
+
+* Add the directory to the Python path
+  if the settings module from the configuration file
+  is the same as it is in the environment.
+  This allows ``django runserver`` to work.
+
 2.1 (2024-12-16)
 ++++++++++++++++
 

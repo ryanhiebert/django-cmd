@@ -1,6 +1,6 @@
 [project]
 name = "django-cmd"
-version = "2.1"
+version = "2.2"
 description = "Have a django command"
 authors = [{ name = "Ryan Hiebert", email = "ryan@ryanhiebert.com" }]
 license = "MIT"
