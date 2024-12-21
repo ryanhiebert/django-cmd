@@ -1,6 +1,6 @@
 [project]
 name = "django-cmd"
-version = "2.2"
+version = "2.3"
 description = "Have a django command"
 authors = [{ name = "Ryan Hiebert", email = "ryan@ryanhiebert.com" }]
 license = "MIT"
@@ -40,7 +40,7 @@ homepage = "https://github.com/ryanhiebert/django-cmd"
 repository = "https://github.com/ryanhiebert/django-cmd"
 
 [project.scripts]
-django = "django_cmd:main"
+django = "django.core.management:execute_from_command_line"
 
 [build-system]
 requires = ["hatchling"]
@@ -52,3 +52,10 @@ dev = ["pytest", "pytest-mock", "coverage", "ruff", "isort"]
 [tool.coverage.run]
 branch = true
 source = "django_cmd"
+
+[tool.hatch.build.hooks.autorun]
+dependencies = ["hatch-autorun"]
+code = """
+import django_cmd
+django_cmd.patch_django()
+"""
