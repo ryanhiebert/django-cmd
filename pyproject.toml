@@ -6,7 +6,7 @@ authors = [{ name = "Ryan Hiebert", email = "ryan@ryanhiebert.com" }]
 license = "MIT"
 readme = "README.rst"
 requires-python = ">=3.8"
-dependencies = ["Django", 'tomli; python_version < "3.11"']
+dependencies = ["Django", "importhook>=1.0.9", 'tomli; python_version < "3.11"']
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
@@ -55,7 +55,4 @@ source = "django_cmd"
 
 [tool.hatch.build.hooks.autorun]
 dependencies = ["hatch-autorun"]
-code = """
-import django_cmd
-django_cmd.patch_django()
-"""
+code = "import django_cmd"

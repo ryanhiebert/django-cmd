@@ -4,13 +4,24 @@ import sys
 from functools import wraps
 from pathlib import Path
 
+import importhook
 try:
     import tomllib
 except ImportError:
     # Python < 3.11
     import tomli as tomllib
 
-import django.core.management
+
+@importhook.on_import('django.core.management')
+def patch_django(management):
+    @wraps(management.ManagementUtility, updated=())
+    class ConfiguredManagementUtility(management.ManagementUtility):
+        @wraps(management.ManagementUtility.execute)
+        def execute(self):
+            configure()
+            return super().execute()
+
+    management.ManagementUtility = ConfiguredManagementUtility
 
 
 def configure():
@@ -38,14 +49,3 @@ def configure():
         if settings_module == os.environ["DJANGO_SETTINGS_MODULE"]:
             sys.path.insert(0, os.getcwd())
 
-
-@wraps(django.core.management.ManagementUtility, updated=())
-class ConfiguredManagementUtility(django.core.management.ManagementUtility):
-    @wraps(django.core.management.ManagementUtility.execute)
-    def execute(self):
-        configure()
-        return super().execute()
-
-
-def patch_django():
-    django.core.management.ManagementUtility = ConfiguredManagementUtility
