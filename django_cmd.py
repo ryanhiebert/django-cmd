@@ -1,6 +1,7 @@
 import configparser
 import os
 import sys
+from functools import wraps
 from pathlib import Path
 
 try:
@@ -9,10 +10,10 @@ except ImportError:
     # Python < 3.11
     import tomli as tomllib
 
-from django.core.management import execute_from_command_line
+import django.core.management
 
 
-def main():
+def configure():
     """Run Django, getting the default from a file if needed."""
     settings_module = None
 
@@ -37,4 +38,14 @@ def main():
         if settings_module == os.environ["DJANGO_SETTINGS_MODULE"]:
             sys.path.insert(0, os.getcwd())
 
-    execute_from_command_line(sys.argv)
+
+@wraps(django.core.management.ManagementUtility, updated=())
+class ConfiguredManagementUtility(django.core.management.ManagementUtility):
+    @wraps(django.core.management.ManagementUtility.execute)
+    def execute(self):
+        configure()
+        return super().execute()
+
+
+def patch_django():
+    django.core.management.ManagementUtility = ConfiguredManagementUtility

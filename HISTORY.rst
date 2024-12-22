@@ -1,3 +1,9 @@
+2.3 (2024-12-20)
+++++++++++++++++
+
+* Support configuration when using
+  the built-in ``django-admin`` command.
+
 2.2 (2024-12-19)
 ++++++++++++++++
 
