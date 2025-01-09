@@ -2,6 +2,7 @@
 ++++++++++++++++
 
 * Walk up the tree to find ``pyproject.toml``.
+* Use ``tmp_path`` pytest fixture in tests.
 
 2.3 (2024-12-20)
 ++++++++++++++++
