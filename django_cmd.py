@@ -13,13 +13,21 @@ except ImportError:
 import django.core.management
 
 
+def locate() -> Path:
+    """Locate the pyproject.toml file."""
+    for path in [cwd := Path.cwd(), *cwd.parents]:
+        candidate = path / "pyproject.toml"
+        if candidate.is_file():
+            return candidate
+
+
 def configure():
     """Run Django, getting the default from a file if needed."""
     settings_module = None
 
     # Load from pyproject.toml first
-    pyproject = Path("pyproject.toml")
-    if pyproject.is_file():
+    if pyproject := locate():
+        print(pyproject.open().readlines())
         with pyproject.open("rb") as f:
             config = tomllib.load(f)
             settings_module = (
