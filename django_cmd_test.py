@@ -35,6 +35,17 @@ def test_configure_passthru(monkeypatch, tmpdir):
 def test_configure_from_pyproject_toml(tmpdir):
     """Read settings module path from toml file."""
     content = '[tool.django]\nsettings_module = "ball.yarn"\n'
+    tmpdir.join("pyproject.toml").write(content.encode("utf-8"))
+    subdir = tmpdir.mkdir("subdir")
+    subdir.chdir()
+    configure()
+    assert os.environ.get("DJANGO_SETTINGS_MODULE") == "ball.yarn"
+
+
+@restore_environ(["DJANGO_SETTINGS_MODULE"])
+def test_configure_from_pyproject_toml_walktree(tmpdir):
+    """Read settings module path from toml file up the tree."""
+    content = '[tool.django]\nsettings_module = "ball.yarn"\n'
     tmpdir.chdir()
     tmpdir.join("pyproject.toml").write(content.encode("utf-8"))
     configure()
