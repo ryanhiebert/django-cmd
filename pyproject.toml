@@ -59,3 +59,6 @@ code = """
 import django_cmd
 django_cmd.patch_django()
 """
+
+[tool.ruff.lint]
+select = ["T201"]

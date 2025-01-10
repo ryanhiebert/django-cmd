@@ -27,7 +27,6 @@ def configure():
 
     # Load from pyproject.toml first
     if pyproject := locate():
-        print(pyproject.open().readlines())
         with pyproject.open("rb") as f:
             config = tomllib.load(f)
             settings_module = (
