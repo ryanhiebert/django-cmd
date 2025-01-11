@@ -22,17 +22,6 @@ def restore_environ(keys):
 
 
 @restore_environ(["DJANGO_SETTINGS_MODULE"])
-def test_configure_passthru(monkeypatch, tmp_path: Path):
-    """It shouldn't change a given DJANGO_SETTINGS_MODULE."""
-    monkeypatch.setenv("DJANGO_SETTINGS_MODULE", "spam.eggs")
-    content = "[django]\nsettings_module = ball.yarn\n"
-    tmp_path.joinpath("setup.cfg").write_text(content, encoding="utf-8")
-    os.chdir(tmp_path)
-    configure()
-    assert os.environ.get("DJANGO_SETTINGS_MODULE") == "spam.eggs"
-
-
-@restore_environ(["DJANGO_SETTINGS_MODULE"])
 def test_configure_from_pyproject_toml(tmp_path):
     """Read settings module path from toml file."""
     content = '[tool.django]\nsettings_module = "ball.yarn"\n'
@@ -40,6 +29,17 @@ def test_configure_from_pyproject_toml(tmp_path):
     os.chdir(tmp_path)
     configure()
     assert os.environ.get("DJANGO_SETTINGS_MODULE") == "ball.yarn"
+
+
+@restore_environ(["DJANGO_SETTINGS_MODULE"])
+def test_configure_passthru(monkeypatch, tmp_path: Path):
+    """It shouldn't change a given DJANGO_SETTINGS_MODULE."""
+    monkeypatch.setenv("DJANGO_SETTINGS_MODULE", "spam.eggs")
+    content = '[tool.django]\nsettings_module = "ball.yarn"\n'
+    tmp_path.joinpath("pyproject.toml").write_text(content, encoding="utf-8")
+    os.chdir(tmp_path)
+    configure()
+    assert os.environ.get("DJANGO_SETTINGS_MODULE") == "spam.eggs"
 
 
 @restore_environ(["DJANGO_SETTINGS_MODULE"])
@@ -94,13 +94,32 @@ def test_configure_no_configfile(tmp_path):
 
 @restore_environ(["DJANGO_SETTINGS_MODULE"])
 def test_check_with_script_target(tmp_path):
-    """Run check without a subprocess for coverage."""
+    """Should add the pyproject.toml directory to the path."""
+    # Run check without a subprocess for coverage.
     from django.core.management import execute_from_command_line
 
     os.chdir(tmp_path)
     subprocess.run(["django", "startproject", "myproject", "."], check=True)
     config = '[tool.django]\nsettings_module = "myproject.settings"\n'
     tmp_path.joinpath("pyproject.toml").write_text(config, encoding="utf-8")
+
+    execute_from_command_line(["django", "check"])
+
+
+@restore_environ(["DJANGO_SETTINGS_MODULE"])
+def test_check_with_script_target_subdir(tmp_path):
+    """Should add the pyproject.toml directory to the path when in a subdir."""
+    # Run check without a subprocess for coverage.
+    from django.core.management import execute_from_command_line
+
+    os.chdir(tmp_path)
+    subprocess.run(["django", "startproject", "myproject", "."], check=True)
+    config = '[tool.django]\nsettings_module = "myproject.settings"\n'
+    tmp_path.joinpath("pyproject.toml").write_text(config, encoding="utf-8")
+
+    subdir = tmp_path.joinpath("subdir")
+    subdir.mkdir()
+    os.chdir(subdir)
 
     execute_from_command_line(["django", "check"])
 
@@ -127,6 +146,10 @@ def test_new_project(command, tmp_path):
 @restore_environ(["DJANGO_SETTINGS_MODULE"])
 def test_runserver(command, tmp_path):
     """Should be able to run the development server for several seconds."""
+    # For reasons I don't understand, this doesn't seem to be cleaning
+    # up the port after the test run completes. To kill it, run:
+    #
+    # lsof -i4:8000 | tail -n 1 | awk '{print $2}' | xargs -n 1 kill -9
     os.chdir(tmp_path)
     subprocess.run([command, "startproject", "myproject", "."], check=True)
     config = '[tool.django]\nsettings_module = "myproject.settings"\n'
