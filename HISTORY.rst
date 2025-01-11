@@ -1,3 +1,9 @@
+2.6 (2025-01-10)
+++++++++++++++++
+
+* Use the ``pyproject.toml`` directory as the path
+  when discovered by walking up the tree.
+
 2.5 (2025-01-09)
 ++++++++++++++++
 
