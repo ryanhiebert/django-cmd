@@ -92,7 +92,7 @@ jobs:
     env:
       COVERAGE_PROCESS_START: ".coveragerc"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: astral-sh/setup-uv@v6
       - run: uv python install ${{ matrix.python-version }}
       - run: uv sync --dev
@@ -114,7 +114,7 @@ jobs:
     needs: pytest
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: astral-sh/setup-uv@v6
       - run: uv python install 3.13
       - uses: actions/download-artifact@v5
