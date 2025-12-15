@@ -1,6 +1,6 @@
 [project]
 name = "django-cmd"
-version = "2.6"
+version = "2.7"
 description = "Have a django command"
 authors = [{ name = "Ryan Hiebert", email = "ryan@ryanhiebert.com" }]
 license = "MIT"
@@ -19,6 +19,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Framework :: Django",
     "Framework :: Django :: 2",
     "Framework :: Django :: 2.2",
@@ -33,6 +34,9 @@ classifiers = [
     "Framework :: Django :: 5",
     "Framework :: Django :: 5.0",
     "Framework :: Django :: 5.1",
+    "Framework :: Django :: 5.2",
+    "Framework :: Django :: 6",
+    "Framework :: Django :: 6.0",
 ]
 
 [project.urls]
