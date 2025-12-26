@@ -1,4 +1,24 @@
-2.7 (2025-01-11)
+3.0 (2025-12-26)
+++++++++++++++++
+
+* **BREAKING:** Configure the python path
+  whenever there is a pyproject.toml,
+  even when not configuring settings.
+  This allows for manually specifying settings modules at the CLI
+  without also having the specify the ``pythonpath`` manually.
+* Deprecate and give warnings when configured via ``setup.cfg``.
+  Use the ``tool.django`` section in ``pyproject.toml`` instead.
+* Rename ``settings_module`` configuration to ``settings``
+  to mirror the ``--settings`` command line argument.
+  The ``settings_module`` spelling is kept for compatibility,
+  but is deprecated and will give deprecation warnings.
+* Add ``pythonpath`` configuration to mirror
+  the ``--pythonpath`` command line argument,
+  to allow for setting the python path
+  relative to the ``pyproject.toml``,
+  such as the common ``src`` directory.
+
+2.7 (2025-12-15)
 ++++++++++++++++
 
 * Add support for Python 3.14, Django 5.2, and Django 6.0.

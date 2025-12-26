@@ -14,8 +14,7 @@ django-cmd: Have a django command
 
 
 Django includes the ``django-admin`` command.
-They prefer to not include multiple ways to do the same thing,
-but I really want to spell it ``django``.
+I really want to spell it ``django``.
 I also wanted to be able to configure a
 default settings module in a configuration file.
 
@@ -49,14 +48,8 @@ add a section like this to configure your default settings module:
 .. code-block:: toml
 
     [tool.django]
-    settings_module = "myproject.settings"
-
-Or add a section like this to a ``setup.cfg`` file:
-
-.. code-block:: ini
-
-    [django]
-    settings_module = myproject.settings
+    settings = "myproject.settings"
+    # pythonpath = "src"  # Default: the pyproject.toml directory
 
 Now you can also use the ``django`` command
 everywhere you would normally use ``python manage.py``:

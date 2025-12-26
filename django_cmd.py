@@ -3,6 +3,7 @@ import os
 import sys
 from functools import wraps
 from pathlib import Path
+from warnings import warn
 
 try:
     import tomllib
@@ -23,29 +24,42 @@ def locate() -> Path:
 
 def configure():
     """Run Django, getting the default from a file if needed."""
-    settings_module = path = None
+    settings = path = None
 
     # Load from pyproject.toml first
     if pyproject := locate():
         with pyproject.open("rb") as f:
             config = tomllib.load(f)
-        settings_module = (
-            config.get("tool", {}).get("django", {}).get("settings_module")
-        )
-        path = None if settings_module is None else pyproject.parent
+        settings = config.get("tool", {}).get("django", {}).get("settings")
+        if not settings:
+            settings = config.get("tool", {}).get("django", {}).get("settings_module")
+            if settings:
+                warn(
+                    "'tool.django.settings_module' in pyproject.toml is deprecated. "
+                    "Use 'tool.django.settings' instead.",
+                    DeprecationWarning,
+                )
+        pythonpath = config.get("tool", {}).get("django", {}).get("pythonpath")
+        path = pyproject.parent / (pythonpath or ".")
 
-    if settings_module is None:
+    if settings is None:
         # Try loading configuration from setup.cfg next
         parser = configparser.RawConfigParser()
         parser.read("setup.cfg")
         if parser.has_option("django", "settings_module"):
-            settings_module = parser.get("django", "settings_module")
-            path = None if settings_module is None else Path.cwd()
+            settings = parser.get("django", "settings_module")
+            path = None if settings is None else Path.cwd()
+        if parser.has_section("django"):
+            warn(
+                "The 'django' section in setup.cfg is deprecated. "
+                "Use the 'tool.django' section in pyproject.toml instead.",
+                DeprecationWarning,
+            )
 
-    if settings_module is not None and path is not None:
-        os.environ.setdefault("DJANGO_SETTINGS_MODULE", settings_module)
-        if settings_module == os.environ["DJANGO_SETTINGS_MODULE"]:
-            sys.path.insert(0, str(path))
+    if settings is not None:
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", settings)
+    if path is not None:
+        sys.path.insert(0, str(path))
 
 
 @wraps(django.core.management.ManagementUtility, updated=())
