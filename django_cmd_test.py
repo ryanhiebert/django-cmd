@@ -203,10 +203,6 @@ def test_new_project(command, tmp_path):
     subprocess.run([command, "check"], check=True)
 
 
-@pytest.mark.skipif(
-    os.environ.get("TOX"),
-    reason="Doesn't release the port quickly enough to run multiple times in quick succession with tox.",
-)
 @pytest.mark.parametrize(
     "command", ["django-admin"]
 )  # If django-admin works, so will django
@@ -221,11 +217,11 @@ def test_runserver(command, tmp_path):
     subprocess.run([command, "startproject", "myproject", "."], check=True)
     config = '[tool.django]\nsettings = "myproject.settings"\n'
     tmp_path.joinpath("pyproject.toml").write_text(config, encoding="utf-8")
+
+    process = subprocess.Popen([command, "runserver"])
     with pytest.raises(subprocess.TimeoutExpired):
-        # Runserver starts a subprocess, but never exits.
-        # 1 second is not enough time for it to start and error
-        # if the settings module isn't configured correctly.
-        # 2 seems to be OK, but to make it hopefully more reliable
-        # we'll use 3 seconds. Otherwise this might not break even
-        # if the functionality does.
-        subprocess.run([command, "runserver"], check=True, timeout=3)
+        try:
+            process.wait(timeout=3)
+        finally:
+            process.terminate()
+            process.wait()
